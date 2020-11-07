@@ -192,7 +192,7 @@ public:
             iter_r = iter_r->parent;
         }
        
-        return iter_l->parent->y_tree->range(down, top);
+        return iter_l->y_tree->range(down, top);
         
    }
 
