@@ -94,13 +94,13 @@ public:
         
         pl->parent = ph->parent = padre;
 
-        padre->y_tree->create_y(l, h);
+        padre->y_tree->create_y(l, h, v);
         
         return padre;
     }
 
  
-    Node<T, M>* create_y(int l, int h){
+    Node<T, M>* create_y(int l, int h, vector<T> v){
         if (l == h)  {
             auto lo = new Node<T, M>(v[l].second, v[l]);
             
@@ -142,8 +142,8 @@ public:
         }
    
         int m = (l + h) / 2;
-        Node<T, M> *pl = create_y(l, m);
-        Node<T, M> *ph = create_y(m + 1, h);
+        Node<T, M> *pl = create_y(l, m, v);
+        Node<T, M> *ph = create_y(m + 1, h, v);
         Node<T, M> *padre = new Node<T, M>((pl->data + ph->data)/2, pl, ph);
         
         pl->parent = ph->parent = padre;
