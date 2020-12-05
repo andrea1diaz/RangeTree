@@ -30,6 +30,7 @@ int main () {
     vector<pair<int, int>> busqueda (vl.begin(), vl.begin() + N);
 
     auto start = high_resolution_clock::now(); 
+    bool bien = true;
 
     for (int i = 0; i < busqueda.size(); ++i) {
         int x1 = busqueda[i].first;
@@ -40,12 +41,25 @@ int main () {
 
         auto r = rt.range(x1, x2, y1, y2);
 
-        // for(auto it : r){
-        //     std::cout << it->coord.first << " " << it->coord.second << std::endl;
-        // }
+        vector<pair<int, int>> chequeador;
+        for (auto it : vl) {
+            if (it.first > x1 && it.first < x2 && it.second > y1 && it.second < y2)  chequeador.push_back(it);
+        }
+
+        for(auto it : vl){
+            if (std::find(r.begin(), r.end(), it) == r.end()) {
+                bien = false;
+            }
+        }
     }
 
     auto stop = high_resolution_clock::now(); 
+
+    if (bien) {
+        cout << "Las busquedas fueron exitosas." << endl;
+    } else {
+        cout << "Se cometieron errores." << endl;
+    }
 
     auto duration = duration_cast<milliseconds>(stop - start);
     cout << "Tiempo: " << duration.count() << " ms (N = " << N << ")." << endl; 
