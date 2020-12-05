@@ -3,3 +3,4 @@
 a.out.dSYM/
 cmake-build-debug/
 a.out
+CMakeLists.txt
