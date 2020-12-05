@@ -47,7 +47,7 @@ int main () {
 
     auto stop = high_resolution_clock::now(); 
 
-    auto duration = duration_cast<microseconds>(stop - start); 
+    auto duration = duration_cast<milliseconds>(stop - start);
     cout << "Tiempo: " << duration.count() << " ms (N = " << N << ")." << endl; 
 
     return 0;
