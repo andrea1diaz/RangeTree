@@ -1,6 +1,9 @@
 #include <iostream>
 #include <utility>
 #include <vector>
+#include <unordered_map>
+#include <map>
+#include <functional>
 
 using namespace std;
 
@@ -36,15 +39,22 @@ struct Node {
 template <typename T, typename M>
 class RangeTree {
     Node<T, M> *root;
+    unordered_map<int, M> indices;
 
     Node<T, M> *aux = nullptr;
 
 public:
-std::vector<T> v;
+    std::vector<T> v;
+
+
     RangeTree() {}
 
-    RangeTree(std::vector<T> v){
-        this->v = v;
+    RangeTree(std::vector<T> vl){
+        sort(vl.begin(), vl.end());
+
+        for(int i=0; i<vl.size(); ++i)  indices.insert({i, vl[i].second});
+
+        this->v = vl;
 
         root = create(0, v.size() - 1);
     }
@@ -94,28 +104,55 @@ std::vector<T> v;
         int m = (l + h)/2;
         Node<T, M> *pl = create(l, m);
         pl->init_y_tree();
-        pl->y_tree->root = pl->y_tree->create_y(l, m, v);
+        std::vector<pair<int, M>> lys;
+        int i = l;
+
+        while (i <= m) {
+            lys.push_back({indices[i], i});
+            i++;
+        }
+        sort(lys.begin(), lys.end());
+
+        pl->y_tree->root = pl->y_tree->create_y(0, lys.size() - 1, lys, v);
 
         Node<T, M> *ph = create(m + 1, h);
         ph->init_y_tree();
-        ph->y_tree->root = ph->y_tree->create_y(m + 1, h, v);
+        std::vector<pair<int, M>> mys;
+        i = m + 1;
+
+        while (i <= h) {
+            mys.push_back ({indices[i], i});
+            i++;
+        }
+        sort(mys.begin(), mys.end());
+        ph->y_tree->root = ph->y_tree->create_y(0, mys.size() - 1, mys, v);
 
         Node<T, M> *padre = new Node<T, M>((pl->data + ph->data)/2, pl, ph);
 
         pl->parent = ph->parent = padre;
 
         padre->init_y_tree();
-        padre->y_tree->root = padre->y_tree->create_y(l, h, v);
+
+        std::vector<pair<int, M>> ys;
+        i = l;
+
+        while (i <= h) {
+            ys.push_back({indices[i], i});
+            i++;
+        }
+
+        sort(ys.begin(), ys.end());
+        padre->y_tree->root = padre->y_tree->create_y(0, ys.size() - 1, ys, v);
 
         return padre;
     }
 
 
-    Node<T, M>* create_y(int l, int h, vector<T> v){
+    Node<T, M>* create_y (int l, int h, std::vector<pair<int, M>> &ys, std::vector<T> &v){
         if (l == h)  {
-            auto lo = new Node<T, M>(v[l].second, v[l]);
+            auto lo = new Node<T, M>(ys[l].first, v[ys[l].second]);
 
-            Node<T, M> *padre = new Node<T, M>(v[l].second);
+            Node<T, M> *padre = new Node<T, M>(ys[l].first);
             lo->parent = padre;
 
             padre->left = lo;
@@ -131,15 +168,15 @@ std::vector<T> v;
         }
 
         if (l + 1 == h) {
-            auto lo = new Node<T, M>(v[l].second, v[l]);
-            auto hi = new Node<T, M>(v[h].second, v[h]);
+            auto lo = new Node<T, M>(ys[l].first, v[ys[l].second]);
+            auto hi = new Node<T, M>(ys[h].first, v[ys[h].second]);
 
             lo->next = hi;
             hi->prev = lo;
 
             lo->is_leaf = hi->is_leaf = true;
 
-            Node<T, M> *padre = new Node<T, M>((v[l].second + v[h].second) / 2, lo, hi);
+            Node<T, M> *padre = new Node<T, M>((ys[l].first + ys[h].first) / 2, lo, hi);
 
             lo->parent = hi->parent = padre;
 
@@ -153,8 +190,8 @@ std::vector<T> v;
         }
 
         int m = (l + h) / 2;
-        Node<T, M> *pl = create_y(l, m, v);
-        Node<T, M> *ph = create_y(m + 1, h, v);
+        Node<T, M> *pl = create_y(l, m, ys, v);
+        Node<T, M> *ph = create_y(m + 1, h, ys, v);
         Node<T, M> *padre = new Node<T, M>((pl->data + ph->data)/2, pl, ph);
 
         pl->parent = ph->parent = padre;
@@ -165,13 +202,13 @@ std::vector<T> v;
    Node<T, M>* find (M val) {
        auto it = root;
 
-       while (!it->is_leaf){
+       while (!it->is_leaf) {
            if (it->data >= val) it = it->left;
 
            else it = it->right;
        }
 
-       if (it->data == val) return it;
+       if (it->data == val || val < it->data) return it;
 
        std::cout << "Not found\n";
        return nullptr;
@@ -195,6 +232,8 @@ std::vector<T> v;
 
 
    vector<Node<T, M>*> range (M left, M right, M down, M top) {
+       if (left > right) swap(left, right);
+       if (down > top) swap(down, top);
         auto iter_l = find(left);
         auto iter_r = find(right);
 
@@ -231,4 +270,19 @@ std::vector<T> v;
             cout<<r->data<<" ";
         print(r->right);
     }
+
+    ~RangeTree() {
+        destroy(root);
+    }
+
+    void destroy(Node<T, M>* node) {
+        if (node) {
+            destroy(node->left);
+            destroy(node->right);
+            destroy(node->next);
+            destroy(node->prev);
+            delete node;
+        }
+    }
 };
+
