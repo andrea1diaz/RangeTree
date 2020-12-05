@@ -7,7 +7,7 @@
 
 #include "RangeTree.cpp"
 
-const int N = 10;
+const int N = 10000;
 
 using namespace std::chrono; 
 
