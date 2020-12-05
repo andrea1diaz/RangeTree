@@ -1,8 +1,6 @@
 #include <iostream>
 #include <vector>
-#include <stdio.h>
 #include <stdlib.h>
-#include <ctime>
 #include <chrono>
 #include <algorithm>
 #include <random>
@@ -26,7 +24,8 @@ int main () {
 
     RangeTree<pair<int, int>, int> rt(vl);
 
-    auto rng = std::default_random_engine {};
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    auto rng = std::default_random_engine (seed);
     std::shuffle(begin(vl), end(vl), rng);
     vector<pair<int, int>> busqueda (vl.begin(), vl.begin() + N);
 

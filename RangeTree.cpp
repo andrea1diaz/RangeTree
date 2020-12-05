@@ -12,21 +12,22 @@ class RangeTree;
 
 template <typename T, typename M>
 struct Node {
-    Node<T, M> *next;
-    Node<T, M> *prev;
+    Node<T, M> *next = nullptr;
+    Node<T, M> *prev = nullptr;
 
     //child nodes
-    Node<T, M> *left;
-    Node<T, M> *right;
+    Node<T, M> *left = nullptr;
+    Node<T, M> *right = nullptr;
 
     //parent
-    Node<T, M> *parent;
+    Node<T, M> *parent = nullptr;
 
     M data;
     pair<M, M> coord;
     bool is_leaf;
+    bool visited = false;
 
-    RangeTree<T, M> *y_tree;
+    RangeTree<T, M> *y_tree = nullptr;
 
     Node () { is_leaf = false; }
     Node (M data_) : data{data_} {  is_leaf = false; };
@@ -38,7 +39,7 @@ struct Node {
 
 template <typename T, typename M>
 class RangeTree {
-    Node<T, M> *root;
+    Node<T, M> *root = nullptr;
     unordered_map<int, M> indices;
 
     Node<T, M> *aux = nullptr;
@@ -47,7 +48,7 @@ public:
     std::vector<T> v;
 
 
-    RangeTree() {}
+    RangeTree() = default;
 
     RangeTree(std::vector<T> vl){
         sort(vl.begin(), vl.end());
@@ -272,17 +273,27 @@ public:
     }
 
     ~RangeTree() {
+        cout << "Destruyendo el range tree..." << endl;
         destroy(root);
     }
 
     void destroy(Node<T, M>* node) {
-        if (node) {
-            destroy(node->left);
-            destroy(node->right);
-            destroy(node->next);
-            destroy(node->prev);
+        if (node && !node->visited) {
+            destroy(node->y_tree);
+            if (node->left) node->left->visited = true; destroy(node->left);
+            if (node->right) node->right->visited = true; destroy(node->right);
+            if (node->next) node->next->visited = true; destroy(node->next);
+            if (node->prev) node->prev->visited = true; destroy(node->prev);
             delete node;
         }
+    }
+
+    void destroy(RangeTree<T, M>* tree) {
+        if (tree)
+            if (tree->root) {
+                tree->root->visited = true;
+                destroy(tree->root);
+            }
     }
 };
 
