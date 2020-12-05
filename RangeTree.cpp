@@ -201,19 +201,21 @@ public:
    }
 
    Node<T, M>* find (M val) {
-       auto it = root;
+        Node<T, M> *it = root;
 
-       while (!it->is_leaf) {
-           if (it->data >= val) it = it->left;
+        while (!it->is_leaf) {
+            if (it->data >= val) it = it->left;
 
-           else it = it->right;
-       }
+            else {
+                if (it->right) it = it->right;
+                else break;
+            }
+        }
 
-       if (it->data == val || val < it->data) return it;
+        if (it->data == val || val < it->data) return it;
 
-       std::cout << "Not found\n";
-       return nullptr;
-   }
+        return nullptr;
+    }
 
 
    std::pair<Node<T, M>*, Node<T, M>*> find (M val, M val1){
@@ -222,12 +224,14 @@ public:
        while (!it->is_leaf){
            if (it->data >= val) it = it->left;
 
-           else it = it->right;
+           else {
+                if (it->right) it = it->right;
+                else break;
+           }
        }
 
        if (it->data == val) return {it, it->parent->y_tree->find(val1)};
 
-       std::cout << "Not found\n";
        return {nullptr, nullptr};
    }
 
