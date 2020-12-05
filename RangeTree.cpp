@@ -232,18 +232,3 @@ std::vector<T> v;
         print(r->right);
     }
 };
-
-
-
-int main () {
-    std::vector<pair<int, int>> vl {{10, 5}, {20, 10}, {30, 40}, {37, 50}, {50, 55}, {58, 60}};
-
-    RangeTree<pair<int, int>, int> rt(vl);
-
-    auto h = rt.range(20, 37, 10, 50);
-
-    for(auto it: h){
-        std::cout << it->coord.first << " " << it->coord.second << std::endl;
-    }
-    return 0;
-}
