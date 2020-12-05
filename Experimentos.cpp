@@ -38,7 +38,7 @@ int main () {
         int x2 = busqueda[i_r].first;
         int y2 = busqueda[i_r].second;
 
-        auto r = rt.range(x1, y1, x2, y2);
+        auto r = rt.range(x1, x2, y1, y2);
 
         // for(auto it : r){
         //     std::cout << it->coord.first << " " << it->coord.second << std::endl;
