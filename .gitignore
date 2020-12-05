@@ -4,3 +4,4 @@ a.out.dSYM/
 cmake-build-debug/
 a.out
 CMakeLists.txt
+.DS_Store
