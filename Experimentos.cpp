@@ -41,20 +41,20 @@ int main () {
 
         auto r = rt.range(x1, x2, y1, y2);
 
-        vector<pair<int, int>> chequeador;
-        for (auto it : vl) {
-            if (it.first > x1 && it.first < x2 && it.second > y1 && it.second < y2)  chequeador.push_back(it);
-        }
+        // vector<pair<int, int>> chequeador;
+        // for (auto it : vl) {
+        //     if (it.first > x1 && it.first < x2 && it.second > y1 && it.second < y2)  chequeador.push_back(it);
+        // }
 
-        for(auto it : vl){
-            bool encontrado = false;
-            for (auto coor : r) {
-                if (coor->coord == it) encontrado = true;
-            }
-            if (!encontrado) {
-                bien = false;
-            }
-        }
+        // for(auto it : vl){
+        //     bool encontrado = false;
+        //     for (auto coor : r) {
+        //         if (coor.coord == it) encontrado = true;
+        //     }
+        //     if (!encontrado) {
+        //         bien = false;
+        //     }
+        // }
     }
 
     auto stop = high_resolution_clock::now(); 

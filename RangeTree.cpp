@@ -236,9 +236,9 @@ public:
    }
 
 
-   vector<Node<T, M>*> range (M left, M right, M down, M top) {
-       if (left > right) swap(left, right);
-       if (down > top) swap(down, top);
+    vector<pair<M, M>> range (M left, M right, M down, M top) {
+        if (left > right) swap(left, right);
+        if (down > top) swap(down, top);
         auto iter_l = find(left);
         auto iter_r = find(right);
 
@@ -247,23 +247,24 @@ public:
             iter_r = iter_r->parent;
         }
 
-        return iter_l->parent->y_tree->range(down, top);
+        return iter_l->parent->y_tree->range_y(left, right, down, top);
 
-   }
+    }
 
-   std::vector<Node<T, M>*> range (M left, M right){
-        auto l = find(left);
+    std::vector<std::pair<M, M>> range_y (M left, M right, M down, M top) {
+        auto d = find(down);
 
-        std::vector<Node<T, M>*> ret;
+        std::vector<std::pair<M, M>> ret;
 
-        while(l != nullptr && l->data <= right) {
-            ret.push_back(l);
+        while(d != nullptr && d->data <= top && d->coord.first >= left && d->coord.first <= right) {
+            if (d->coord.first >= left && d->coord.first <= right && d->coord.second >= down && d->coord.second <= top)
+            ret.push_back(d->coord);
 
-            l = l->next;
+            d = d->next;
         }
 
         return ret;
-   }
+    }
 
 
 
