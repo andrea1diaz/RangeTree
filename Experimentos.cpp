@@ -7,7 +7,7 @@
 
 #include "RangeTree.cpp"
 
-const int N = 10000;
+const int N = 10;
 
 using namespace std::chrono; 
 
@@ -47,7 +47,11 @@ int main () {
         }
 
         for(auto it : vl){
-            if (std::find(r.begin(), r.end(), it) == r.end()) {
+            bool encontrado = false;
+            for (auto coor : r) {
+                if (coor->coord == it) encontrado = true;
+            }
+            if (!encontrado) {
                 bien = false;
             }
         }
