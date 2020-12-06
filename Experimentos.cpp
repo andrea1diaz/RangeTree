@@ -7,7 +7,7 @@
 
 #include "RangeTree.cpp"
 
-const int N = 10;
+const int N = 10000;
 
 using namespace std::chrono; 
 
@@ -40,30 +40,9 @@ int main () {
         int y2 = busqueda[i_r].second;
 
         auto r = rt.range(x1, x2, y1, y2);
-
-        vector<pair<int, int>> chequeador;
-        for (auto it : vl) {
-            if (it.first > x1 && it.first < x2 && it.second > y1 && it.second < y2)  chequeador.push_back(it);
-        }
-
-        for(auto it : vl){
-            bool encontrado = false;
-            for (auto coor : r) {
-                if (coor == it) encontrado = true;
-            }
-            if (!encontrado) {
-                bien = false;
-            }
-        }
     }
 
     auto stop = high_resolution_clock::now(); 
-
-    if (bien) {
-        cout << "Las busquedas fueron exitosas." << endl;
-    } else {
-        cout << "Se cometieron errores." << endl;
-    }
 
     auto duration = duration_cast<milliseconds>(stop - start);
     cout << "Tiempo: " << duration.count() << " ms (N = " << N << ")." << endl; 
